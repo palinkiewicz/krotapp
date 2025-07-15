@@ -5,21 +5,24 @@ import android.content.Context
 import android.util.Log
 import okhttp3.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
+import java.io.InputStreamReader
 import java.time.LocalDate
 
-object XlsxFileHandler {
-    private const val FILE_NAME = "daily_data.xlsx"
-    private const val PREF_NAME = "xlsx_prefs"
+object CsvFileHandler {
+    private const val FILE_NAME = "daily_data.csv"
+    private const val PREF_NAME = "csv_prefs"
     private const val KEY_LAST_DATE = "last_download_date"
-    private const val TAG = "XLSX"
+    private const val TAG = "CSV"
 
     enum class Status {
         DOWNLOADING, UP_TO_DATE, SUCCESS, FAILED
     }
 
-    fun maybeDownloadXlsx(context: Context, onStatus: (Status) -> Unit) {
+    fun maybeDownloadCsv(context: Context, onStatus: (Status) -> Unit) {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val lastDate = prefs.getString(KEY_LAST_DATE, null)
         val today = LocalDate.now().toString()
@@ -31,7 +34,7 @@ object XlsxFileHandler {
         }
 
         onStatus(Status.DOWNLOADING)
-        downloadXlsx(context) { success ->
+        downloadCsv(context) { success ->
             if (success) {
                 prefs.edit().putString(KEY_LAST_DATE, today).apply()
                 onStatus(Status.SUCCESS)
@@ -41,10 +44,10 @@ object XlsxFileHandler {
         }
     }
 
-    fun downloadXlsx(context: Context, onResult: (Boolean) -> Unit) {
+    fun downloadCsv(context: Context, onResult: (Boolean) -> Unit) {
         val fileId = BuildConfig.SHEET_ID
         val apiKey = BuildConfig.API_KEY
-        val url = "https://www.googleapis.com/drive/v3/files/$fileId?alt=media&key=$apiKey"
+        val url = "https://docs.google.com/spreadsheets/d/$fileId/export?format=tsv&key=$apiKey"
 
         val file = File(context.filesDir, FILE_NAME)
         val client = OkHttpClient()
@@ -80,5 +83,41 @@ object XlsxFileHandler {
     private fun getSavedFile(context: Context): File? {
         val file = File(context.filesDir, FILE_NAME)
         return if (file.exists()) file else null
+    }
+
+    fun parseCsvFile(context: Context): List<Storage> {
+        val file = getSavedFile(context) ?: return emptyList()
+        val storages = mutableListOf<Storage>()
+
+        val reader = BufferedReader(InputStreamReader(FileInputStream(file)))
+        var currentMG: String? = null
+        var currentItems = mutableListOf<Item>()
+
+        reader.forEachLine { line ->
+            val trimmed = line.trim()
+            if (trimmed.isBlank()) return@forEachLine
+
+            val parts = trimmed.split("\t")
+            if (parts[0].startsWith("MG:")) {
+                if (currentMG != null && currentItems.isNotEmpty()) {
+                    storages.add(Storage(currentMG!!, currentItems))
+                }
+                currentMG = parts[1].trim()
+                currentItems = mutableListOf()
+            } else if (parts.size >= 4 && parts[0].isNotBlank()) {
+                val index = parts[0].trim()
+                val name = parts[1].trim()
+                val unit = parts[2].trim()
+                val amount = parts[3].replace(",", ".").toDoubleOrNull() ?: 0.0
+
+                currentItems.add(Item(index, name, unit, amount))
+            }
+        }
+
+        if (currentMG != null && currentItems.isNotEmpty()) {
+            storages.add(Storage(currentMG!!, currentItems))
+        }
+
+        return storages
     }
 }
