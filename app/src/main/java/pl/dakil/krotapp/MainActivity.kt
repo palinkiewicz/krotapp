@@ -1,20 +1,19 @@
 package pl.dakil.krotapp
 
+import AppNavGraph
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.dakil.krotapp.data.CsvFileHandler
 import pl.dakil.krotapp.extension.showToast
 import pl.dakil.krotapp.ui.theme.KrotAppTheme
+import pl.dakil.krotapp.viewmodel.ItemsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,26 +23,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             KrotAppTheme {
                 val context = LocalContext.current
+                val viewModel: ItemsViewModel = viewModel()
+
+                val downloadStatus by viewModel.downloadStatus.collectAsState()
+
+                LaunchedEffect(downloadStatus) {
+                    when (downloadStatus) {
+                        CsvFileHandler.Status.DOWNLOADING -> context.showToast("Downloading...")
+                        CsvFileHandler.Status.UP_TO_DATE -> context.showToast("Already up to date")
+                        CsvFileHandler.Status.SUCCESS -> context.showToast("Download complete!")
+                        CsvFileHandler.Status.FAILED -> context.showToast("Download failed!")
+                    }
+                }
 
                 LaunchedEffect(Unit) {
-                    CsvFileHandler.maybeDownloadCsv(context) { status ->
-                        when (status) {
-                            CsvFileHandler.Status.DOWNLOADING -> context.showToast("Downloading...")
-                            CsvFileHandler.Status.UP_TO_DATE -> context.showToast("Already up to date")
-                            CsvFileHandler.Status.SUCCESS -> context.showToast("Download complete!")
-                            CsvFileHandler.Status.FAILED -> context.showToast("Download failed!")
-                        }
-                    }
-
-                    val storages = CsvFileHandler.parseCsvFile(context)
+                    viewModel.loadData(context)
                 }
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Text(
-                        text = "Hello!",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavGraph(viewModel)
             }
         }
     }
