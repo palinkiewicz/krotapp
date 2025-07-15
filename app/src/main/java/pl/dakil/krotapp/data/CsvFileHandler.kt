@@ -14,7 +14,6 @@ import java.time.LocalDate
 object CsvFileHandler {
     private const val FILE_NAME = "daily_data.csv"
     private const val KEY_LAST_DATE = "last_download_date"
-    private const val TAG = "CSV"
 
     enum class Status {
         DOWNLOADING, UP_TO_DATE, SUCCESS, FAILED
