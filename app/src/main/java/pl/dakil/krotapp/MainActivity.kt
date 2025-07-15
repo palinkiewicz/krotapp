@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pl.dakil.krotapp.data.CsvFileHandler
 import pl.dakil.krotapp.extension.showToast
@@ -30,10 +31,10 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(downloadStatus) {
                     when (downloadStatus) {
-                        CsvFileHandler.Status.DOWNLOADING -> context.showToast("Downloading...")
-                        CsvFileHandler.Status.UP_TO_DATE -> context.showToast("Already up to date")
-                        CsvFileHandler.Status.SUCCESS -> context.showToast("Download complete!")
-                        CsvFileHandler.Status.FAILED -> context.showToast("Download failed!")
+                        CsvFileHandler.Status.DOWNLOADING -> context.showToast(context.getString(R.string.downloading))
+                        CsvFileHandler.Status.UP_TO_DATE -> context.showToast(context.getString(R.string.already_up_to_date))
+                        CsvFileHandler.Status.SUCCESS -> context.showToast(context.getString(R.string.download_complete))
+                        CsvFileHandler.Status.FAILED -> context.showToast(context.getString(R.string.download_failed))
                     }
                 }
 
