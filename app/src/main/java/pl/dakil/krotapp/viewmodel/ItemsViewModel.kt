@@ -1,6 +1,7 @@
 package pl.dakil.krotapp.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,12 +38,14 @@ class ItemsViewModel : ViewModel() {
         val queryMG = mg?.trim()?.lowercase()
         val queryName = name?.trim()?.lowercase()
 
-        val result = _storages.value.flatMap { it.items }.filter { item ->
-            val mgMatches = queryMG.isNullOrEmpty() || item.index.lowercase().contains(queryMG)
-            val nameMatches = queryName.isNullOrEmpty() || item.name.lowercase().contains(queryName)
-            mgMatches && nameMatches
+        val result = _storages.value.filter {
+            queryMG.isNullOrEmpty() || it.mg.lowercase().contains(queryMG)
+        }.flatMap { it.items }.filter {
+            queryName.isNullOrEmpty() || it.name.lowercase().contains(queryName)
         }
 
         _filteredItems.value = result
+
+        Log.e("DUPA", _filteredItems.value.count().toString())
     }
 }

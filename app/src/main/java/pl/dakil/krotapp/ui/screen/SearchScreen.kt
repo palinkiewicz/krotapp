@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,13 +40,17 @@ fun SearchScreen(
     var expanded by rememberSaveable { mutableStateOf(false) }
     var nameQuery by rememberSaveable { mutableStateOf("") }
 
+    val storages by itemsViewModel.storages.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = stringResource(R.string.search_title)) })
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.padding(paddingValues).padding(16.dp),
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -68,7 +73,7 @@ fun SearchScreen(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    itemsViewModel.storages.value.forEach { storage ->
+                    storages.sortedBy { s -> s.mg.filter { it.isDigit() }.toInt() }.forEach { storage ->
                         DropdownMenuItem(
                             text = { Text(storage.mg) },
                             onClick = {
