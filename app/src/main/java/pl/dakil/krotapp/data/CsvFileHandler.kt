@@ -43,7 +43,7 @@ object CsvFileHandler {
         }
     }
 
-    fun downloadCsv(context: Context, onResult: (Boolean) -> Unit) {
+    private fun downloadCsv(context: Context, onResult: (Boolean) -> Unit) {
         val fileId = BuildConfig.SHEET_ID
         val apiKey = BuildConfig.API_KEY
         val url = "https://docs.google.com/spreadsheets/d/$fileId/export?format=tsv&key=$apiKey"
