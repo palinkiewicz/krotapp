@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Krot App</string>
+    <string name="preferences_id">krot_app</string>
     <string name="search_title">Stany magazynowe</string>
     <string name="list_title">Wyniki wyszukiwania</string>
     <string name="mg_number">Magazyn</string>

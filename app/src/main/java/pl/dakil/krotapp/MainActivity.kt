@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,7 +41,9 @@ class MainActivity : ComponentActivity() {
                     viewModel.loadData(context)
                 }
 
-                AppNavGraph(viewModel)
+                Surface {
+                    AppNavGraph(viewModel)
+                }
             }
         }
     }

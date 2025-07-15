@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.okhttp)
-    implementation(libs.poi.ooxml)
 
     testImplementation(libs.junit)
 
