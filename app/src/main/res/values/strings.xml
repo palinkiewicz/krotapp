@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Krot App</string>
+    <string name="search_title">Stany magazynowe</string>
+    <string name="list_title">Wyniki wyszukiwania</string>
+    <string name="mg_number">Magazyn</string>
+    <string name="item_name">Nazwa towaru</string>
+    <string name="search_button">Wyszukaj</string>
+    <string name="back">Wstecz</string>
 </resources>
