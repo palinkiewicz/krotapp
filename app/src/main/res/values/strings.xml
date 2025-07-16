@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Krot App</string>
     <string name="preferences_id">krot_app</string>
-    <string name="already_up_to_date">Pobrano już dzisiejszą aktualizację</string>
-    <string name="downloading">Pobieranie aktualizacji...</string>
-    <string name="download_complete">Aktualizacja udana!</string>
-    <string name="download_failed">Aktualizacja nie powiodła się.</string>
+    <string name="already_up_to_date">Pobrano już dzisiejszą aktualizację stanów magazynowych</string>
+    <string name="downloading">Pobieranie aktualizacji stanów magazynowych…</string>
+    <string name="download_complete">Aktualizacja stanów magazynowych udana!</string>
+    <string name="download_failed">Aktualizacja stanów magazynowych nie powiodła się.</string>
     <string name="search_title">Stany magazynowe</string>
     <string name="list_title">Wyniki wyszukiwania</string>
     <string name="mg_number">Magazyn</string>
