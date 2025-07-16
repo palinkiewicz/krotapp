@@ -18,19 +18,20 @@ class ItemsViewModel : ViewModel() {
     private val _filteredItems = MutableStateFlow<List<Item>>(emptyList())
     val filteredItems: StateFlow<List<Item>> = _filteredItems
 
-    private val _downloadStatus = MutableStateFlow(CsvFileHandler.Status.UP_TO_DATE)
+    private val _downloadStatus = MutableStateFlow(CsvFileHandler.Status.UNKNOWN)
     val downloadStatus: StateFlow<CsvFileHandler.Status> = _downloadStatus
 
     fun loadData(context: Context) {
         viewModelScope.launch {
             CsvFileHandler.maybeDownloadCsv(context) { status ->
                 _downloadStatus.value = status
+
+                if (status == CsvFileHandler.Status.SUCCESS)
+                    _storages.value = CsvFileHandler.parseCsvFile(context)
             }
 
-            val storages: List<Storage> = CsvFileHandler.parseCsvFile(context)
-            val items = storages.flatMap { it.items }
-            _storages.value = storages
-            _filteredItems.value = items
+            _storages.value = CsvFileHandler.parseCsvFile(context)
+            _filteredItems.value = emptyList()
         }
     }
 

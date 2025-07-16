@@ -16,7 +16,7 @@ object CsvFileHandler {
     private const val KEY_LAST_DATE = "last_download_date"
 
     enum class Status {
-        DOWNLOADING, UP_TO_DATE, SUCCESS, FAILED
+        UNKNOWN, DOWNLOADING, UP_TO_DATE, SUCCESS, FAILED
     }
 
     fun maybeDownloadCsv(context: Context, onStatus: (Status) -> Unit) {

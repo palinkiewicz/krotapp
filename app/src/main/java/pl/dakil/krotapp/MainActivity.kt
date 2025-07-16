@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
                         CsvFileHandler.Status.UP_TO_DATE -> context.showToast(context.getString(R.string.already_up_to_date))
                         CsvFileHandler.Status.SUCCESS -> context.showToast(context.getString(R.string.download_complete))
                         CsvFileHandler.Status.FAILED -> context.showToast(context.getString(R.string.download_failed))
+                        else -> {}
                     }
                 }
 
