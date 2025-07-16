@@ -12,4 +12,8 @@
     <string name="search_button">Wyszukaj</string>
     <string name="back">Wstecz</string>
     <string name="not_found">Nie znaleziono wyszukiwanego towaru w magazynie</string>
+    <string name="sorting_name_az">Alfabetycznie (A-Z)</string>
+    <string name="sorting_name_za">Alfabetycznie (Z-A)</string>
+    <string name="sorting_amount_high">Najwięcej</string>
+    <string name="sorting_amount_low">Najmniej</string>
 </resources>

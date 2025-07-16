@@ -21,6 +21,8 @@ class ItemsViewModel : ViewModel() {
     private val _downloadStatus = MutableStateFlow(CsvFileHandler.Status.UNKNOWN)
     val downloadStatus: StateFlow<CsvFileHandler.Status> = _downloadStatus
 
+    enum class SortOptions { NAME_AZ, NAME_ZA, AMOUNT_HIGH, AMOUNT_LOW }
+
     fun loadData(context: Context) {
         viewModelScope.launch {
             CsvFileHandler.maybeDownloadCsv(context) { status ->
@@ -46,7 +48,17 @@ class ItemsViewModel : ViewModel() {
         }
 
         _filteredItems.value = result
+        sortFilteredItems(SortOptions.NAME_AZ)
+    }
 
-        Log.e("DUPA", _filteredItems.value.count().toString())
+    fun sortFilteredItems(option: SortOptions) {
+        _filteredItems.value = _filteredItems.value.let { list ->
+            when (option) {
+                SortOptions.NAME_AZ -> list.sortedBy { it.name }
+                SortOptions.NAME_ZA -> list.sortedByDescending { it.name }
+                SortOptions.AMOUNT_LOW -> list.sortedBy { it.amount }
+                SortOptions.AMOUNT_HIGH -> list.sortedByDescending { it.amount }
+            }
+        }
     }
 }

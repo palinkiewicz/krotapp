@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,8 +28,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +48,7 @@ fun ListScreen(
     onNavigateBack: () -> Unit
 ) {
     val filteredItems by itemsViewModel.filteredItems.collectAsState()
+    var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -53,6 +61,30 @@ fun ListScreen(
                                 R.string.back
                             )
                         )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(painterResource(R.drawable.baseline_sort_24), contentDescription = "Sort")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        ItemsViewModel.SortOptions.entries.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(when (option) {
+                                    ItemsViewModel.SortOptions.NAME_AZ -> stringResource(R.string.sorting_name_az)
+                                    ItemsViewModel.SortOptions.NAME_ZA -> stringResource(R.string.sorting_name_za)
+                                    ItemsViewModel.SortOptions.AMOUNT_LOW -> stringResource(R.string.sorting_amount_low)
+                                    ItemsViewModel.SortOptions.AMOUNT_HIGH -> stringResource(R.string.sorting_amount_high)
+                                }) },
+                                onClick = {
+                                    itemsViewModel.sortFilteredItems(option)
+                                    expanded = false
+                                }
+                            )
+                        }
                     }
                 },
                 title = { Text(text = stringResource(R.string.list_title)) }
@@ -79,7 +111,6 @@ fun ListScreen(
             }
 
             LazyColumn(
-                modifier = Modifier.padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp)
