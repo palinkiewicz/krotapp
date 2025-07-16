@@ -11,4 +11,5 @@
     <string name="item_name">Nazwa towaru</string>
     <string name="search_button">Wyszukaj</string>
     <string name="back">Wstecz</string>
+    <string name="not_found">Nie znaleziono wyszukiwanego towaru w magazynie</string>
 </resources>

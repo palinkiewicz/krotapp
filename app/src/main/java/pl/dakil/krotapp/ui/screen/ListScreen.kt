@@ -1,16 +1,20 @@
 package pl.dakil.krotapp.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pl.dakil.krotapp.R
 import pl.dakil.krotapp.viewmodel.ItemsViewModel
@@ -54,30 +59,50 @@ fun ListScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(filteredItems) { item ->
-                Card {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = item.name, style = MaterialTheme.typography.titleSmall)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(text = item.index, style = MaterialTheme.typography.bodySmall)
+        Box(modifier = Modifier.padding(paddingValues)) {
+            if (filteredItems.isEmpty()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "",
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = stringResource(R.string.not_found), textAlign = TextAlign.Center)
+                }
+            }
+
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                items(filteredItems) { item ->
+                    Card {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(text = item.name, style = MaterialTheme.typography.titleSmall)
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(text = item.index, style = MaterialTheme.typography.bodySmall)
+                            }
+                            Text(
+                                text = "${item.amount} ${item.unit}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(start = 12.dp),
+                                softWrap = false
+                            )
                         }
-                        Text(
-                            text = "${item.amount} ${item.unit}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 12.dp),
-                            softWrap = false
-                        )
                     }
                 }
             }
