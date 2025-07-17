@@ -16,4 +16,6 @@
     <string name="sorting_name_za">Alfabetycznie (Z-A)</string>
     <string name="sorting_amount_high">Najwięcej</string>
     <string name="sorting_amount_low">Najmniej</string>
+    <string name="new_version_found">Znaleziono nową wersję aplikacji!</string>
+    <string name="update_version">Pobierz</string>
 </resources>
