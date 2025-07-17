@@ -131,8 +131,9 @@ fun SearchScreen(
             if (updateStatus.status == UpdateCheckerViewModel.Status.UPDATE) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Card {
-                    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = stringResource(R.string.new_version_found), style = MaterialTheme.typography.bodyLarge)
+                        Spacer(modifier = Modifier.height(16.dp))
                         OutlinedButton(onClick = {
                             updateStatus.link?.let { url ->
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
