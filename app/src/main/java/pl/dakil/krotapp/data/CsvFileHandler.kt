@@ -2,6 +2,7 @@ package pl.dakil.krotapp.data
 
 import pl.dakil.krotapp.BuildConfig
 import android.content.Context
+import android.util.Log
 import okhttp3.*
 import pl.dakil.krotapp.R
 import java.io.BufferedReader
@@ -10,6 +11,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
 import java.time.LocalDate
+import androidx.core.content.edit
 
 object CsvFileHandler {
     private const val FILE_NAME = "daily_data.csv"
@@ -35,7 +37,7 @@ object CsvFileHandler {
         onStatus(Status.DOWNLOADING)
         downloadCsv(context) { success ->
             if (success) {
-                prefs.edit().putString(KEY_LAST_DATE, today).apply()
+                prefs.edit { putString(KEY_LAST_DATE, today) }
                 onStatus(Status.SUCCESS)
             } else {
                 onStatus(Status.FAILED)
@@ -46,6 +48,7 @@ object CsvFileHandler {
     private fun downloadCsv(context: Context, onResult: (Boolean) -> Unit) {
         val fileId = BuildConfig.SHEET_ID
         val apiKey = BuildConfig.API_KEY
+        Log.d("CSV", "File ID: $fileId, API Key: $apiKey")
         val url = "https://docs.google.com/spreadsheets/d/$fileId/export?format=tsv&key=$apiKey"
 
         val file = File(context.filesDir, FILE_NAME)
@@ -68,7 +71,7 @@ object CsvFileHandler {
                         file.outputStream().use { output -> input.copyTo(output) }
                     }
                     onResult(true)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     onResult(false)
                 }
             }
@@ -110,7 +113,7 @@ object CsvFileHandler {
         }
 
         if (currentMG != null && currentItems.isNotEmpty()) {
-            storages.add(Storage(currentMG!!, currentItems))
+            storages.add(Storage(currentMG, currentItems))
         }
 
         return storages
